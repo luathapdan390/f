@@ -2,36 +2,9 @@ import { GoogleGenAI, Type, Modality } from "@google/genai";
 import type { FacebookMindsetShift } from '../types';
 
 export async function generateFacebookMindsetShift(topic: string, belief1: string, belief2: string): Promise<FacebookMindsetShift> {
-  if (!process.env.API_KEY) {
-    console.warn("API_KEY environment variable not set. Using mocked data.");
-    return new Promise(resolve => setTimeout(() => resolve({
-      beliefReframing: {
-        certainty: "Posting creates a certain anchor for your thoughts, making your knowledge concrete and shareable.",
-        variety: "You can post in diverse formats: text, images, videos, links. Every day offers a new angle.",
-        significance: "Your unique perspective is valuable. Sharing it establishes you as a knowledgeable voice in your niche.",
-        connection: "Each post is an invitation for connection, sparking conversations and building a community around shared interests.",
-        growth: "The act of formulating and sharing ideas forces you to learn and grow your own understanding of the topic.",
-        contribution: "You are contributing a piece of value to the world that could be the exact solution someone is looking for."
-      },
-      resourceReframing: {
-        certainty: "Certainty comes from starting small. A commitment of just 10 minutes a day is achievable and builds momentum.",
-        variety: "You'll discover a variety of new tools and workflows that make content creation easier and more enjoyable.",
-        significance: "Consistency makes you significant. You become a reliable and respected source of information.",
-        connection: "Regular posting builds a deep, trusting relationship with your audience. They look forward to hearing from you.",
-        growth: "You will grow into a more efficient and effective communicator, a skill that benefits all areas of life.",
-        contribution: "Your consistent contribution creates a library of value for others, a lasting legacy of your knowledge."
-      },
-      contentIdeas: [
-        `Share a surprising statistic about "${topic}".`,
-        `Post a quick 'myth vs. fact' about "${topic}".`,
-        `Ask your audience a question related to a common challenge in "${topic}".`,
-        `Share a personal story or insight about your journey with "${topic}".`,
-        `Recommend a book, podcast, or tool related to "${topic}".`
-      ]
-    }), 1500));
   }
 
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
   const schema = {
       type: Type.OBJECT,
@@ -104,11 +77,11 @@ export async function generateFacebookMindsetShift(topic: string, belief1: strin
 }
 
 export async function generateSpeech(text: string): Promise<string> {
-    if (!process.env.API_KEY) {
-        console.warn("API_KEY not set for audio generation. This feature will not work.");
+    if (!process.env.GEMINI_API_KEY) {
+        console.warn("GEMINI_API_KEY not set for audio generation. This feature will not work.");
         throw new Error("API Key not configured for audio generation.");
     }
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     const response = await ai.models.generateContent({
         model: "gemini-2.5-flash-preview-tts",
         contents: [{ parts: [{ text: text }] }],
